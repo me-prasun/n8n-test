@@ -38,18 +38,22 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          aider README.md --yes --message "
-          Update the README based on this Jira issue:
-
-          Jira: ${{ inputs.jira_key }}
-          Summary: ${{ inputs.jira_summary }}
-          Description: ${{ inputs.jira_description }}
-
-          Requirements:
-          - Improve or update README content
-          - Keep formatting clean (Markdown)
-          - Do not create new files
-          "
+          aider README.md \
+            --yes \
+            --model gpt-4o \
+            --no-gitignore \
+            --message "
+            Update the README based on this Jira issue:
+      
+            Jira: ${{ inputs.jira_key }}
+            Summary: ${{ inputs.jira_summary }}
+            Description: ${{ inputs.jira_description }}
+      
+            Requirements:
+            - Improve or update README content
+            - Keep formatting clean (Markdown)
+            - Do not create new files
+            "
 
       - name: Commit changes (if any)
         run: |
