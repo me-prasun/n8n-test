@@ -71,10 +71,14 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          # Record the current HEAD so we can diff only Aider's file changes later
+          git rev-parse HEAD > /tmp/pre_aider_sha
+
           aider \
             --yes \
             --model gpt-4o \
             --no-gitignore \
+            --no-auto-commits \
             --map-tokens 4096 \
             --message "${{ inputs.description }}
 
@@ -93,12 +97,9 @@ jobs:
           git config user.name  "ai-bot"
           git config user.email "ai@bot.com"
 
-          # Stage all changes
+          # Stage all changes except .aider* files
           git add .
-
-          # Unstage aider-generated files
-          git reset HEAD .aider* 2>/dev/null || true
-          git reset HEAD *.aider* 2>/dev/null || true
+          git diff --cached --name-only | grep '^\\.aider' | xargs git reset HEAD -- 2>/dev/null || true
 
           # Only commit if there are staged changes
           if git diff --cached --quiet; then
