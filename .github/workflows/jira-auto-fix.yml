@@ -3,6 +3,9 @@ name: AI Bug Fix
 on:
   workflow_dispatch:
     inputs:
+      summary:
+        description: Short summary for commit and PR title
+        required: true
       description:
         description: What's the bug? Describe it plainly.
         required: true
@@ -84,15 +87,17 @@ jobs:
             - Do not refactor unrelated code.
             - Do not create new files unless necessary.
             "
-            
+
       # -----------------------------
-      # Commit changes
+      # Commit changes (ignore aider files)
       # -----------------------------
       - name: Commit changes
         run: |
           git config user.name  "ai-bot"
           git config user.email "ai@bot.com"
-          git add .
+
+          # Exclude aider files
+          git add . ':!*.aider*' ':!.aider*'
 
           if git diff --cached --quiet; then
             echo "NO_CHANGES=true" >> $GITHUB_ENV
@@ -101,11 +106,11 @@ jobs:
             echo "NO_CHANGES=false" >> $GITHUB_ENV
             CHANGED=$(git diff --cached --name-only | tr '\n' ' ')
             echo "✅ Changed: $CHANGED"
-            git commit -m "fix: ${{ inputs.description }}"
+            git commit -m "fix: ${{ inputs.summary }}"
           fi
 
       # -----------------------------
-      # Debug git state (optional but useful)
+      # Debug git state
       # -----------------------------
       - name: Debug git status
         if: env.NO_CHANGES != 'true'
@@ -114,20 +119,20 @@ jobs:
           git log --oneline -n 3
 
       # -----------------------------
-      # Create Pull Request (handles branch + push)
+      # Create Pull Request
       # -----------------------------
       - name: Create pull request
         if: env.NO_CHANGES != 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "fix: ${{ inputs.description }}"
+          commit-message: "fix: ${{ inputs.summary }}"
           branch: ai-fix/run-${{ github.run_number }}
           base: main
-          title: "fix: ${{ inputs.description }}"
+          title: "fix: ${{ inputs.summary }}"
           draft: true
           labels: ai-generated
           body: |
-            **Task:**
+            **Task Details:**
             ${{ inputs.description }}
 
             **Changes:**
