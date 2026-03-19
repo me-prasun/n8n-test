@@ -84,6 +84,92 @@ jobs:
             git commit -m "fix: ${{ inputs.description }}"
           fi
 
+      name: AI Bug Fix
+
+on:
+  workflow_dispatch:
+    inputs:
+      description:
+        description: "What's the bug? Describe it plainly."
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Aider
+        run: pip install aider-chat
+
+      - name: Install project dependencies
+        run: |
+          if [ -f requirements.txt ];  then pip install -r requirements.txt; fi
+          if [ -f pyproject.toml ];    then pip install -e . 2>/dev/null || true; fi
+          if [ -f setup.py ];          then pip install -e . 2>/dev/null || true; fi
+
+      - name: Create branch
+        run: |
+          BRANCH="ai-fix/run-${{ github.run_number }}"
+          git checkout -b "$BRANCH"
+
+      - name: Debug API key presence
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "❌ OPENAI_API_KEY is NOT set"
+            exit 1
+          else
+            echo "✅ OPENAI_API_KEY is set"
+          fi
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          
+      - name: Run Aider
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          aider README.md \
+            --yes \
+            --model gpt-4o \
+            --no-gitignore \
+            --map-tokens 4096 \
+            --message "
+          Fix the following bug in this Python codebase:
+          ${{ inputs.description }}
+          Instructions:
+          - Find the root cause and make the minimal fix.
+          - Do not refactor unrelated code.
+          - Do not create new files unless necessary.
+          "
+
+      - name: Commit changes
+        run: |
+          git config user.name  "ai-bot"
+          git config user.email "ai@bot.com"
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "NO_CHANGES=true" >> $GITHUB_ENV
+            echo "⚠️ Aider made no changes."
+          else
+            git commit -m "fix: ${{ inputs.description }}"
+          fi
+
       - name: Push branch
         if: env.NO_CHANGES != 'true'
         run: git push origin HEAD
