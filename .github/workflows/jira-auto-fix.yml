@@ -12,6 +12,10 @@ on:
       jira_url:
         required: true
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   fix-bug:
     runs-on: ubuntu-latest
