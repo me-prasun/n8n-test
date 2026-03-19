@@ -42,13 +42,25 @@ jobs:
           BRANCH="ai-fix/run-${{ github.run_number }}"
           git checkout -b "$BRANCH"
 
+      - name: Debug API key presence
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "❌ OPENAI_API_KEY is NOT set"
+            exit 1
+          else
+            echo "✅ OPENAI_API_KEY is set"
+          fi
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          
       - name: Run Aider
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          aider \
+          aider README.md \
             --yes \
             --model gpt-4o \
+            --api-key "$OPENAI_API_KEY"
             --no-gitignore \
             --map-tokens 4096 \
             --message "
