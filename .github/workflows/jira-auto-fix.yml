@@ -60,14 +60,11 @@ jobs:
           aider README.md \
             --yes \
             --model gpt-4o \
-            --api-key "$OPENAI_API_KEY"
             --no-gitignore \
             --map-tokens 4096 \
             --message "
           Fix the following bug in this Python codebase:
-
           ${{ inputs.description }}
-
           Instructions:
           - Find the root cause and make the minimal fix.
           - Do not refactor unrelated code.
