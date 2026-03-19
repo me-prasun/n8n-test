@@ -76,15 +76,15 @@ jobs:
             --no-gitignore \
             --map-tokens 4096 \
             --message "
-${{ inputs.description }}
-
-Instructions:
-- Read the repo map and find the relevant files yourself.
-- Make the minimal, targeted change needed.
-- Do not refactor unrelated code.
-- Do not create new files unless necessary.
-"
-
+            ${{ inputs.description }}
+            
+            Instructions:
+            - Read the repo map and find the relevant files yourself.
+            - Make the minimal, targeted change needed.
+            - Do not refactor unrelated code.
+            - Do not create new files unless necessary.
+            "
+            
       # -----------------------------
       # Commit changes
       # -----------------------------
