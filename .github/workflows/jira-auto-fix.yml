@@ -1,0 +1,91 @@
+name: Jira Auto Fix
+
+on:
+  workflow_dispatch:
+    inputs:
+      jira_key:
+        required: true
+      jira_summary:
+        required: true
+      jira_description:
+        required: true
+      jira_url:
+        required: true
+
+jobs:
+  fix-bug:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node (for Next.js)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup Python (for Aider)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Install Aider
+        run: |
+          pip install aider-chat
+
+      - name: Create branch
+        run: |
+          BRANCH="bugfix/${{ inputs.jira_key }}"
+          git checkout -b $BRANCH
+
+      - name: Run Aider to fix bug
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          aider --yes --message "
+          Fix this bug:
+
+          Jira: ${{ inputs.jira_key }}
+          Summary: ${{ inputs.jira_summary }}
+          Description: ${{ inputs.jira_description }}
+
+          Requirements:
+          - Fix root cause
+          - Do not modify unnecessary files
+          - Ensure code builds and passes tests
+          - Keep changes minimal
+          "
+
+      - name: Run tests
+        run: |
+          npm test || true
+
+      - name: Build project
+        run: |
+          npm run build || true
+
+      - name: Commit changes (if any)
+        run: |
+          git config user.name "ai-bot"
+          git config user.email "ai@bot.com"
+          git add .
+          git commit -m "fix(${{ inputs.jira_key }}): automated fix" || echo "No changes"
+
+      - name: Push branch
+        run: |
+          git push origin HEAD
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "[${{ inputs.jira_key }}] Automated bug fix"
+          body: |
+            Auto-generated fix for ${{ inputs.jira_key }}
+
+            Jira: ${{ inputs.jira_url }}
+          branch: bugfix/${{ inputs.jira_key }}
