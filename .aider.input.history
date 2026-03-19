@@ -1,0 +1,22 @@
+
+# 2026-03-19 18:24:27.587361
++
++  GET /items/{id} — KeyError crash when item doesn't exist (should be a 404)GET /items/{id}/total ZeroDivisionError when quantity is 0 (should be a 400) DELETE /items/{id} — KeyError crash + returns nothing on success
++  
++  Instructions:
++  - Read the repo map and find the relevant files yourself.
++  - Make the minimal, targeted change needed.
++  - Do not refactor unrelated code.
++  - Do not create new files unless necessary.
++  
+
+# 2026-03-19 18:24:27.587409
++
++  GET /items/{id} — KeyError crash when item doesn't exist (should be a 404)GET /items/{id}/total ZeroDivisionError when quantity is 0 (should be a 400) DELETE /items/{id} — KeyError crash + returns nothing on success
++  
++  Instructions:
++  - Read the repo map and find the relevant files yourself.
++  - Make the minimal, targeted change needed.
++  - Do not refactor unrelated code.
++  - Do not create new files unless necessary.
++  
