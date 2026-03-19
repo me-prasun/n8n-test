@@ -101,22 +101,13 @@ jobs:
       
           # Unstage aider files explicitly
           git reset HEAD .aider* 2>/dev/null || true
-          git reset HEAD *.aider* 2>/dev/null || true
-      
-          if git diff --cached --quiet; then
-            echo "NO_CHANGES=true" >> $GITHUB_ENV
-            echo "⚠️ Aider made no changes."
-          else
-            echo "NO_CHANGES=false" >> $GITHUB_ENV
-            CHANGED=$(git diff --cached --name-only | tr '\n' ' ')
-            echo "✅ Changed: $CHANGED"
-            git commit -m "fix: ${{ inputs.summary }}"
+          git reset HEAD *.aider* 2>/dev/null || true  
+          git commit -m "fix: ${{ inputs.summary }}"
           fi
       # -----------------------------
       # Debug git state
       # -----------------------------
       - name: Debug git status
-        if: env.NO_CHANGES != 'true'
         run: |
           git status
           git log --oneline -n 3
@@ -125,7 +116,6 @@ jobs:
       # Create Pull Request
       # -----------------------------
       - name: Create pull request
-        if: env.NO_CHANGES != 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "fix: ${{ inputs.summary }}"
