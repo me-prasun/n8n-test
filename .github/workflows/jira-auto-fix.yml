@@ -20,19 +20,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node (for Next.js)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
       - name: Setup Python (for Aider)
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          npm install
 
       - name: Install Aider
         run: |
@@ -43,38 +34,29 @@ jobs:
           BRANCH="bugfix/${{ inputs.jira_key }}"
           git checkout -b $BRANCH
 
-      - name: Run Aider to fix bug
+      - name: Run Aider to update README
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          aider --yes --message "
-          Fix this bug:
+          aider README.md --yes --message "
+          Update the README based on this Jira issue:
 
           Jira: ${{ inputs.jira_key }}
           Summary: ${{ inputs.jira_summary }}
           Description: ${{ inputs.jira_description }}
 
           Requirements:
-          - Fix root cause
-          - Do not modify unnecessary files
-          - Ensure code builds and passes tests
-          - Keep changes minimal
+          - Improve or update README content
+          - Keep formatting clean (Markdown)
+          - Do not create new files
           "
-
-      - name: Run tests
-        run: |
-          npm test || true
-
-      - name: Build project
-        run: |
-          npm run build || true
 
       - name: Commit changes (if any)
         run: |
           git config user.name "ai-bot"
           git config user.email "ai@bot.com"
           git add .
-          git commit -m "fix(${{ inputs.jira_key }}): automated fix" || echo "No changes"
+          git commit -m "docs(${{ inputs.jira_key }}): update README" || echo "No changes"
 
       - name: Push branch
         run: |
@@ -83,9 +65,9 @@ jobs:
       - name: Create PR
         uses: peter-evans/create-pull-request@v6
         with:
-          title: "[${{ inputs.jira_key }}] Automated bug fix"
+          title: "[${{ inputs.jira_key }}] Update README"
           body: |
-            Auto-generated fix for ${{ inputs.jira_key }}
+            Auto-generated README update for ${{ inputs.jira_key }}
 
             Jira: ${{ inputs.jira_url }}
           branch: bugfix/${{ inputs.jira_key }}
