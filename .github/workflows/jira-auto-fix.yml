@@ -95,10 +95,14 @@ jobs:
         run: |
           git config user.name  "ai-bot"
           git config user.email "ai@bot.com"
-
-          # Exclude aider files
-          git add . ':!*.aider*' ':!.aider*'
-
+      
+          # Add everything first
+          git add .
+      
+          # Unstage aider files explicitly
+          git reset HEAD .aider* 2>/dev/null || true
+          git reset HEAD *.aider* 2>/dev/null || true
+      
           if git diff --cached --quiet; then
             echo "NO_CHANGES=true" >> $GITHUB_ENV
             echo "⚠️ Aider made no changes."
@@ -108,7 +112,6 @@ jobs:
             echo "✅ Changed: $CHANGED"
             git commit -m "fix: ${{ inputs.summary }}"
           fi
-
       # -----------------------------
       # Debug git state
       # -----------------------------
