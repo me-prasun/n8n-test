@@ -1,5 +1,4 @@
 name: AI Bug Fix
-
 on:
   workflow_dispatch:
     inputs:
@@ -18,7 +17,6 @@ jobs:
   fix:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     steps:
       # -----------------------------
       # Checkout repo
@@ -78,9 +76,8 @@ jobs:
             --model gpt-4o \
             --no-gitignore \
             --map-tokens 4096 \
-            --message "
-            ${{ inputs.description }}
-            
+            --message "${{ inputs.description }}
+
             Instructions:
             - Read the repo map and find the relevant files yourself.
             - Make the minimal, targeted change needed.
@@ -95,15 +92,21 @@ jobs:
         run: |
           git config user.name  "ai-bot"
           git config user.email "ai@bot.com"
-      
-          # Add everything first
+
+          # Stage all changes
           git add .
-      
-          # Unstage aider files explicitly
+
+          # Unstage aider-generated files
           git reset HEAD .aider* 2>/dev/null || true
-          git reset HEAD *.aider* 2>/dev/null || true  
-          git commit -m "fix: ${{ inputs.summary }}"
+          git reset HEAD *.aider* 2>/dev/null || true
+
+          # Only commit if there are staged changes
+          if git diff --cached --quiet; then
+            echo "⚠️ No changes to commit."
+          else
+            git commit -m "fix: ${{ inputs.summary }}"
           fi
+
       # -----------------------------
       # Debug git state
       # -----------------------------
