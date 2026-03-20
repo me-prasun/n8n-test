@@ -14,6 +14,9 @@ on:
       issue_key:
         description: Issue Key of Jira Ticket.
         required: true
+      message_ts:
+        description: Timestamp of creation of parent message.
+        required: true
 
 permissions:
   contents: write
@@ -171,4 +174,5 @@ jobs:
               \"pr_url\": \"${{ steps.cpr.outputs.pull-request-url }}\",
               \"channel_id\": \"${{ inputs.channel_id }}\",
               \"issue_key\": \"${{ inputs.issue_key }}\",
+              \"message_ts\": \"${{ inputs.message_ts }}\",
             }"
