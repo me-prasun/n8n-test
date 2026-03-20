@@ -174,5 +174,5 @@ jobs:
               \"pr_url\": \"${{ steps.cpr.outputs.pull-request-url }}\",
               \"channel_id\": \"${{ inputs.channel_id }}\",
               \"issue_key\": \"${{ inputs.issue_key }}\",
-              \"message_ts\": \"${{ inputs.message_ts }}\",
+              \"message_ts\": \"${{ inputs.message_ts }}\"
             }"
