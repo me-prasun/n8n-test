@@ -1,0 +1,20 @@
+
+# 2026-03-20 10:01:54.468722
++BUG DESCRIPTION --------------- Actual Behavior: GET /items/{id} raises a KeyError and results in a 500 crash when the item does not exist. GET /items/{id}/total raises a ZeroDivisionError when the item's quantity is 0, causing a 500 crash. DELETE /items/{id} can raise KeyError for missing ids and on success returns an empty or unspecified response with no clear status. Expected Behavior: GET /items/{id} should return 404 with a JSON error body like {'error': 'item not found'} for non-existent ids. GET /items/{id}/total should validate quantity and return 400 with a JSON error like {'error': 'invalid quantity'} when quantity is 0, avoiding division by zero. DELETE /items/{id} should return 204 No Content on successful deletion and 404 with a JSON error for non-existent ids, without raising KeyError. Affected Area: Items API - endpoints GET /items/{id}, GET /items/{id}/total, DELETE /items/{id} ASSUMPTIONS ----------- - ⚠️ The implementation uses direct dict or map lookups that raise KeyError when an id is missing rather than returning None. - ⚠️ The total calculation performs a division by quantity without a guard against zero. ACCEPTANCE CRITERIA ------------------- 1. Given an id that does not exist, when calling GET /items/{id}, then the service responds 404 with JSON body {'error': 'item not found'} and does not raise KeyError or expose a stack trace. 2. Given an item with quantity 0, when calling GET /items/{id}/total, then the service responds 400 with JSON body {'error': 'invalid quantity'} and does not raise ZeroDivisionError; for quantity > 0 the correct total is returned. 3. No regression in item retrieval, deletion, and total calculation endpoints.
++
++  Instructions:
++  - Read the repo map and find the relevant files yourself.
++  - Make the minimal, targeted change needed.
++  - Do not refactor unrelated code.
++  - Do not create new files unless necessary.
++  
+
+# 2026-03-20 10:01:54.468782
++BUG DESCRIPTION --------------- Actual Behavior: GET /items/{id} raises a KeyError and results in a 500 crash when the item does not exist. GET /items/{id}/total raises a ZeroDivisionError when the item's quantity is 0, causing a 500 crash. DELETE /items/{id} can raise KeyError for missing ids and on success returns an empty or unspecified response with no clear status. Expected Behavior: GET /items/{id} should return 404 with a JSON error body like {'error': 'item not found'} for non-existent ids. GET /items/{id}/total should validate quantity and return 400 with a JSON error like {'error': 'invalid quantity'} when quantity is 0, avoiding division by zero. DELETE /items/{id} should return 204 No Content on successful deletion and 404 with a JSON error for non-existent ids, without raising KeyError. Affected Area: Items API - endpoints GET /items/{id}, GET /items/{id}/total, DELETE /items/{id} ASSUMPTIONS ----------- - ⚠️ The implementation uses direct dict or map lookups that raise KeyError when an id is missing rather than returning None. - ⚠️ The total calculation performs a division by quantity without a guard against zero. ACCEPTANCE CRITERIA ------------------- 1. Given an id that does not exist, when calling GET /items/{id}, then the service responds 404 with JSON body {'error': 'item not found'} and does not raise KeyError or expose a stack trace. 2. Given an item with quantity 0, when calling GET /items/{id}/total, then the service responds 400 with JSON body {'error': 'invalid quantity'} and does not raise ZeroDivisionError; for quantity > 0 the correct total is returned. 3. No regression in item retrieval, deletion, and total calculation endpoints.
++
++  Instructions:
++  - Read the repo map and find the relevant files yourself.
++  - Make the minimal, targeted change needed.
++  - Do not refactor unrelated code.
++  - Do not create new files unless necessary.
++  
