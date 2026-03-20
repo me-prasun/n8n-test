@@ -13,7 +13,10 @@ items = {}
 @app.get("/items/{item_id}")
 def get_item(item_id: int):
     # BUG 1: no check if item exists — raises KeyError instead of 404
-    return items[item_id]
+    if item_id in items:
+        return items[item_id]
+    else:
+        return {"error": "Item not found"}, 404
 
 @app.post("/items/{item_id}")
 def create_item(item_id: int, item: Item):
@@ -24,10 +27,16 @@ def create_item(item_id: int, item: Item):
 def get_total(item_id: int):
     item = items[item_id]
     # BUG 2: divides by quantity — crashes with ZeroDivisionError if quantity is 0
+    if item.quantity == 0:
+        return {"error": "Quantity is zero, cannot calculate total"}, 400
     price_per_unit = item.price / item.quantity
     return {"total": price_per_unit * item.quantity}
 
 @app.delete("/items/{item_id}")
 def delete_item(item_id: int):
     # BUG 3: deletes without checking existence, and returns nothing (should confirm)
-    del items[item_id]
+    if item_id in items:
+        del items[item_id]
+        return {"message": "Item deleted"}
+    else:
+        return {"error": "Item not found"}, 404

@@ -1,0 +1,20 @@
+
+# 2026-03-20 10:22:20.209222
++BUG DESCRIPTION --------------- Actual Behavior: The repository README.md is empty or lacks project documentation, leaving users without an overview, installation steps, usage examples, or development guidance. Expected Behavior: README.md should provide comprehensive project documentation including project overview, installation, configuration, usage examples, development and testing instructions, contribution guidelines, and license information. Affected Area: Repository documentation / README.md ASSUMPTIONS ----------- - ⚠️ The repository contains a file named 'README.md' that is currently empty or minimally populated; if missing, create a new 'README.md'. - ⚠️ The AI agent can analyze source files and package manifests (for example 'package.json', 'pyproject.toml', 'setup.py', 'go.mod') to infer install/run commands, dependencies, and basic usage examples. ACCEPTANCE CRITERIA ------------------- 1. Given the repository root, when the AI generates or updates 'README.md', then the file exists and contains top-level sections: 'Project Overview', 'Installation', 'Usage', 'Configuration', 'Development', 'Testing', 'Contributing', and 'License'. 2. Given the project source and manifest files, when the AI extracts relevant details, then the README includes accurate install and run commands and at least one working usage example or minimal quickstart that can be executed locally. 3. No regression in build or test behavior: existing CI pipelines and test scripts run without unintended modifications as a result of the README update.
++
++  Instructions:
++  - Read the repo map and find the relevant files yourself.
++  - Make the minimal, targeted change needed.
++  - Do not refactor unrelated code.
++  - Do not create new files unless necessary.
++  
+
+# 2026-03-20 10:22:20.209280
++BUG DESCRIPTION --------------- Actual Behavior: The repository README.md is empty or lacks project documentation, leaving users without an overview, installation steps, usage examples, or development guidance. Expected Behavior: README.md should provide comprehensive project documentation including project overview, installation, configuration, usage examples, development and testing instructions, contribution guidelines, and license information. Affected Area: Repository documentation / README.md ASSUMPTIONS ----------- - ⚠️ The repository contains a file named 'README.md' that is currently empty or minimally populated; if missing, create a new 'README.md'. - ⚠️ The AI agent can analyze source files and package manifests (for example 'package.json', 'pyproject.toml', 'setup.py', 'go.mod') to infer install/run commands, dependencies, and basic usage examples. ACCEPTANCE CRITERIA ------------------- 1. Given the repository root, when the AI generates or updates 'README.md', then the file exists and contains top-level sections: 'Project Overview', 'Installation', 'Usage', 'Configuration', 'Development', 'Testing', 'Contributing', and 'License'. 2. Given the project source and manifest files, when the AI extracts relevant details, then the README includes accurate install and run commands and at least one working usage example or minimal quickstart that can be executed locally. 3. No regression in build or test behavior: existing CI pipelines and test scripts run without unintended modifications as a result of the README update.
++
++  Instructions:
++  - Read the repo map and find the relevant files yourself.
++  - Make the minimal, targeted change needed.
++  - Do not refactor unrelated code.
++  - Do not create new files unless necessary.
++  
