@@ -8,6 +8,12 @@ on:
       description:
         description: What's the bug? Describe it plainly.
         required: true
+      channel_id:
+        description: Channel ID of Slack from which the bug is reported.
+        required: true
+      issue_key:
+        description: Issue Key of Jira Ticket.
+        required: true
 
 permissions:
   contents: write
@@ -120,6 +126,7 @@ jobs:
       # Create Pull Request
       # -----------------------------
       - name: Create pull request
+        id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "fix: ${{ inputs.summary }}"
@@ -136,3 +143,32 @@ jobs:
             Automated fix generated using Aider (GPT-4o)
 
             ⚠️ Please review carefully before merging.
+            
+      # -----------------------------
+      # Notify Webhook
+      # -----------------------------
+      - name: Send webhook notification
+        if: always()
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "⚠️ WEBHOOK_URL is not set"
+            exit 0
+          fi
+
+          STATUS="${{ job.status }}"
+          PR_URL=$(git config --get remote.origin.url | sed 's/.git$//')/pulls
+
+          curl -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"status\": \"$STATUS\",
+              \"summary\": \"${{ inputs.summary }}\",
+              \"description\": \"${{ inputs.description }}\",
+              \"repo\": \"${{ github.repository }}\",
+              \"run_id\": \"${{ github.run_id }}\",
+              \"pr_url\": \"${{ steps.cpr.outputs.pull-request-url }}\",
+              \"channel_id\": \"${{ inputs.channel_id }}\",
+              \"issue_key\": \"${{ inputs.issue_key }}\",
+            }"
