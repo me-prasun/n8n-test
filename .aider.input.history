@@ -1,0 +1,20 @@
+
+# 2026-03-27 10:00:13.536688
++BUG DESCRIPTION --------------- Actual Behavior: It shows an error when an item does not exist. It also shows an error when the item quantity is 0. When deleting an object the client does not receive a success response. Expected Behavior: Requests for non-existent items should return HTTP 404 with a clear 'item not found' JSON response. Items with quantity 0 should not produce an error but return a valid 200 response indicating 'quantity': 0 and an 'out_of_stock' status. Successful DELETE operations should return a 200 or 204 with an explicit success confirmation (or empty 204) so the client can observe success. Affected Area: Items API / Inventory service - item retrieval, quantity handling, and DELETE endpoints. ASSUMPTIONS ----------- - ⚠️ The system uses a RESTful Items or Inventory API with standard HTTP status codes. - ⚠️ Current failures are returned as generic errors or 500s instead of explicit 404/200/204 responses. ACCEPTANCE CRITERIA ------------------- 1. Given a non-existent item id, when the client requests the item, then the API responds with HTTP 404 and a JSON body containing 'error': 'item not found' and no stacktrace. 2. Given an existing item with quantity equal to 0, when the client requests the item or checks availability, then the API responds with HTTP 200 and a JSON body containing 'quantity': 0 and 'status': 'out_of_stock' and does not return an error status code. 3. No regression in item create/list/update/delete flows: successful DELETE requests return HTTP 200 or 204 with an explicit success confirmation or empty body, and other item endpoints continue to function as before.
++
++  Instructions:
++  - Read the repo map and find the relevant files yourself.
++  - Make the minimal, targeted change needed.
++  - Do not refactor unrelated code.
++  - Do not create new files unless necessary.
++  
+
+# 2026-03-27 10:00:13.536773
++BUG DESCRIPTION --------------- Actual Behavior: It shows an error when an item does not exist. It also shows an error when the item quantity is 0. When deleting an object the client does not receive a success response. Expected Behavior: Requests for non-existent items should return HTTP 404 with a clear 'item not found' JSON response. Items with quantity 0 should not produce an error but return a valid 200 response indicating 'quantity': 0 and an 'out_of_stock' status. Successful DELETE operations should return a 200 or 204 with an explicit success confirmation (or empty 204) so the client can observe success. Affected Area: Items API / Inventory service - item retrieval, quantity handling, and DELETE endpoints. ASSUMPTIONS ----------- - ⚠️ The system uses a RESTful Items or Inventory API with standard HTTP status codes. - ⚠️ Current failures are returned as generic errors or 500s instead of explicit 404/200/204 responses. ACCEPTANCE CRITERIA ------------------- 1. Given a non-existent item id, when the client requests the item, then the API responds with HTTP 404 and a JSON body containing 'error': 'item not found' and no stacktrace. 2. Given an existing item with quantity equal to 0, when the client requests the item or checks availability, then the API responds with HTTP 200 and a JSON body containing 'quantity': 0 and 'status': 'out_of_stock' and does not return an error status code. 3. No regression in item create/list/update/delete flows: successful DELETE requests return HTTP 200 or 204 with an explicit success confirmation or empty body, and other item endpoints continue to function as before.
++
++  Instructions:
++  - Read the repo map and find the relevant files yourself.
++  - Make the minimal, targeted change needed.
++  - Do not refactor unrelated code.
++  - Do not create new files unless necessary.
++  
